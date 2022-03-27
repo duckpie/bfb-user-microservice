@@ -1,9 +1,12 @@
 package server
 
 import (
+	"context"
+
 	"github.com/wrs-news/bfb-user-microservice/internal/db"
 	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type Server struct {
@@ -19,6 +22,10 @@ type ServerI interface {
 
 func (s *Server) GetServer() *grpc.Server {
 	return s.server
+}
+
+func (s *Server) HeartbeatCheck(ctx context.Context, e *emptypb.Empty) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func InitServer(s db.SQLStoreI) *Server {

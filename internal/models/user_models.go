@@ -3,6 +3,7 @@ package models
 import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 )
 
 type User struct {
@@ -14,6 +15,18 @@ type User struct {
 	Role      int32  `json:"role"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
+}
+
+func (u *User) ToProtoUser() *pb.User {
+	return &pb.User{
+		Id:        u.Id,
+		Uuid:      u.Uuid,
+		Login:     u.Login,
+		Email:     u.Email,
+		Role:      u.Role,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
+	}
 }
 
 func (u *User) Validation() error {
