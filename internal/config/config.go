@@ -15,7 +15,8 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	DbUrl string `toml:"DB_URL"`
+	DbUrl     string `toml:"DB_URL"`
+	DbUrlTest string `toml:"DB_URL_TEST"`
 }
 
 type RedisConfig struct {
