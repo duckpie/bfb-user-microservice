@@ -9,7 +9,7 @@ require (
 )
 
 require (
-	github.com/wrs-news/golang-proto v0.1.2
+	github.com/wrs-news/golang-proto v0.2.2
 	google.golang.org/protobuf v1.28.0
 )
 

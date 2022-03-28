@@ -58,8 +58,23 @@ func (s *Server) GetUserByUuid(ctx context.Context, uReq *pb.UserReqUuid) (*pb.U
 	return u.ToProtoUser(), nil
 }
 
-func (s *Server) DeleteUser(ctx context.Context, uReq *pb.UserReqID) (*pb.User, error) {
-	u := models.User{Id: uReq.Id}
+func (s *Server) UpdateUser(ctx context.Context, uUreq *pb.UpdateUserReq) (*pb.User, error) {
+	u := models.User{
+		Uuid:  uUreq.Uuid,
+		Login: uUreq.Login,
+		Email: uUreq.Email,
+		Role:  uUreq.Role,
+	}
+
+	if err := s.sqlstore.User().Update(&u); err != nil {
+		return nil, err
+	}
+
+	return u.ToProtoUser(), nil
+}
+
+func (s *Server) DeleteUser(ctx context.Context, uReq *pb.UserReqUuid) (*pb.User, error) {
+	u := models.User{Uuid: uReq.Uuid}
 
 	if err := s.sqlstore.User().Delete(&u); err != nil {
 		return nil, err

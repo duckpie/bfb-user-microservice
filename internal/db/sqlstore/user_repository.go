@@ -94,12 +94,35 @@ func (r *UserRepository) Delete(u *models.User) error {
 	return r.store.QueryRow(
 		`
 		DELETE FROM users
-		WHERE id=$1
-		RETURNING uuid, login, email, hash, role, created_at, updated_at
+		WHERE uuid=$1
+		RETURNING id, login, email, hash, role, created_at, updated_at
 		`,
-		u.Id,
+		u.Uuid,
 	).Scan(
-		&u.Uuid,
+		&u.Id,
+		&u.Login,
+		&u.Email,
+		&u.Hash,
+		&u.Role,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+}
+
+func (r *UserRepository) Update(u *models.User) error {
+	return r.store.QueryRow(
+		`
+		UPDATE users 
+		SET login=$1, email=$2, role=$3
+		WHERE uuid=$4
+		RETURNING id, login, email, hash, role, created_at, updated_at
+		`,
+		u.Login,
+		u.Email,
+		u.Role,
+		u.Uuid,
+	).Scan(
+		&u.Id,
 		&u.Login,
 		&u.Email,
 		&u.Hash,

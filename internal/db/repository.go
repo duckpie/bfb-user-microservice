@@ -10,6 +10,7 @@ type UserRepositoryI interface {
 	GetById(u *models.User) error
 	GetByUuid(u *models.User) error
 	GetByLogin(u *models.User) error
+	Update(u *models.User) error
 	Delete(u *models.User) error
 
 	Count(sReq *pb.SelectionReq) (int32, error)

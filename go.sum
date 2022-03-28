@@ -80,6 +80,12 @@ github.com/wrs-news/golang-proto v0.1.1 h1:oywUiajG9Er/RyzCGKIevEy7aD/ezPlRYDyoN
 github.com/wrs-news/golang-proto v0.1.1/go.mod h1:OgmppPtEbB8XyPPAMPW1yru81ixkvZR3h7I3p2sXZMc=
 github.com/wrs-news/golang-proto v0.1.2 h1:AiG0TnDq3vYufe0Ah5Z8cPbeOQlXJkH634Xj4WOXpdg=
 github.com/wrs-news/golang-proto v0.1.2/go.mod h1:OgmppPtEbB8XyPPAMPW1yru81ixkvZR3h7I3p2sXZMc=
+github.com/wrs-news/golang-proto v0.2.0 h1:cDcLWZekV1a2peObjsV4xnVLP2frVgb3UEEshtgi0/k=
+github.com/wrs-news/golang-proto v0.2.0/go.mod h1:OgmppPtEbB8XyPPAMPW1yru81ixkvZR3h7I3p2sXZMc=
+github.com/wrs-news/golang-proto v0.2.1 h1:9EuUAFXJ2mPOkf63Pb6Zy+Vc6BjAJCDuTFs8abYflns=
+github.com/wrs-news/golang-proto v0.2.1/go.mod h1:OgmppPtEbB8XyPPAMPW1yru81ixkvZR3h7I3p2sXZMc=
+github.com/wrs-news/golang-proto v0.2.2 h1:E4TARO4lXjUxIJ7GFPJZ29t/2SVPuSCR3AjiE/MJ4dw=
+github.com/wrs-news/golang-proto v0.2.2/go.mod h1:OgmppPtEbB8XyPPAMPW1yru81ixkvZR3h7I3p2sXZMc=
 go.opentelemetry.io/proto/otlp v0.7.0/go.mod h1:PqfVotwruBrMGOCsRd/89rSnXhoiJIqeYNgFYFoEGnI=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
