@@ -29,40 +29,21 @@ func (u *User) ToProtoUser() *pb.User {
 	}
 }
 
-func (u *User) Validation() error {
+func NewUserReq_Validation(nu *pb.NewUserReq) error {
 	return validation.ValidateStruct(
-		u,
+		nu,
 
-		validation.Field(&u.Id,
-			validation.When(
-				u.CreatedAt != "" && u.UpdatedAt != "",
-				validation.Required,
-				validation.Min(1),
-			),
-		),
-
-		validation.Field(&u.Uuid,
-			validation.When(
-				u.CreatedAt != "" && u.UpdatedAt != "",
-				is.UUIDv4,
-				validation.Required,
-			),
-		),
-
-		validation.Field(&u.Login,
-			validation.Required,
-		),
-
-		validation.Field(&u.Email,
+		validation.Field(&nu.Email,
 			is.Email,
 			validation.Required,
 		),
 
-		validation.Field(&u.Hash,
-			validation.When(
-				u.CreatedAt != "" && u.UpdatedAt != "",
-				validation.Required,
-			),
+		validation.Field(&nu.Login,
+			validation.Required,
+		),
+
+		validation.Field(&nu.Password,
+			validation.Required,
 		),
 	)
 }

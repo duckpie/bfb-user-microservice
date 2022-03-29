@@ -7,9 +7,28 @@ import (
 	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *Server) CreateUser(ctx context.Context, nu *pb.NewUserReq) (*pb.User, error) {
+	st := status.New(codes.InvalidArgument, "invalid username")
+	desc := "The username must only contain alphanumeric characters"
+	v := &errdetails.BadRequest_FieldViolation{
+		Field:       "username",
+		Description: desc,
+	}
+	br := &errdetails.BadRequest{}
+	br.FieldViolations = append(br.FieldViolations, v)
+	st, err := st.WithDetails(br)
+
+	// Валидация
+	if err := models.NewUserReq_Validation(nu); err != nil {
+		return nil, st.Err()
+	}
+
+	// Создание хеша пароля
 	b, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.MinCost)
 	if err != nil {
 		return nil, err
@@ -21,6 +40,7 @@ func (s *Server) CreateUser(ctx context.Context, nu *pb.NewUserReq) (*pb.User, e
 		Hash:  string(b),
 	}
 
+	// Операция с БД
 	if err := s.sqlstore.User().Create(&u); err != nil {
 		return nil, err
 	}
