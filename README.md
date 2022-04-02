@@ -15,3 +15,9 @@ migrate create -ext sql -dir migrations <migration_name>
 ```
 migrate -path migrations -database <url> [up/down]
 ```
+
+## Очистить `volumes`
+
+```
+sudo docker-compose -f docker-compose.local.yml down --volumes
+```

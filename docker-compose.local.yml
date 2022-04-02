@@ -1,26 +1,68 @@
 version: "3.9"
 services:
-  app:
+  user_ms_service:
     build:
       dockerfile: Dockerfile
       context: .
     depends_on:
-      - redis
+      - db
+      - migrate
     command: run
-    ports:
-      - "50051:50051"
     restart: unless-stopped
 
-  redis:
-    image: redis:6-alpine
+  db:
+    image: postgres:14.1-alpine
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "postgres",
+          "-U",
+          "root"
+        ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - APP_DB_USER=wrs
+      - APP_DB_PASS=qwerty
+      - APP_DB_NAME=wrs_user_ms_docker
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
     ports:
-      - '127.0.0.1:35006:6379'
+      - '5432:5432'
     volumes:
-      - redis:/var/lib/redis
-    restart: unless-stopped
+      - ./db:/docker-entrypoint-initdb.d/
+      - db:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://wrs:qwerty@db:5432/wrs_user_ms_docker?sslmode=disable",
+        "up"
+      ]
+    links:
+      - db
+    depends_on:
+      - db
+    restart: on-failure
 
 volumes:
-  redis:
+  db:
     driver: local
 
 networks:

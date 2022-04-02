@@ -4,7 +4,7 @@
 PORT = 50051
 
 [services.database]
-DB_URL = "postgres://wrs:qwerty@localhost:5432/wrs_user_ms?sslmode=disable"
+DB_URL = "postgres://wrs:qwerty@db:5432/wrs_user_ms_docker?sslmode=disable"
 DB_URL_TEST = "postgres://wrs:qwerty@localhost:5432/wrs_user_ms_test?sslmode=disable"
 
 [services.redis]
