@@ -2,14 +2,10 @@ version: "3.9"
 services:
   user_ms_service:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.test
       context: .
     depends_on:
       - db
-    ports:
-      - "50051:50051"
-    command: run
-    restart: unless-stopped
 
   db:
     image: postgres:14.1-alpine
@@ -45,7 +41,7 @@ services:
       - db:/var/lib/postgresql/data
     restart: unless-stopped
 
-  migrate_main:
+  migrate_test:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
@@ -54,7 +50,7 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://wrs:qwerty@db:5432/wrs_user_ms?sslmode=disable",
+        "postgres://wrs:qwerty@db:5432/wrs_user_ms_test?sslmode=disable",
         "up"
       ]
     links:
