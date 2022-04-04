@@ -6,6 +6,8 @@ services:
       context: .
     depends_on:
       - db
+    ports:
+      - "50051:50051"
     command: run
     restart: unless-stopped
 

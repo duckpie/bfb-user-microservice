@@ -3,9 +3,19 @@ SERVICE=app
 .PHONY: run
 
 run:
-	go build -o $(SERVICE) main.go
-	clear		
-	./$(SERVICE) run
+	sudo docker-compose -f docker-compose.local.yml up
+
+
+.PHONY: build
+
+build:
+	sudo docker-compose -f docker-compose.local.yml build
+
+
+.PHONY: down
+
+build:
+	sudo docker-compose -f docker-compose.local.yml down --volumes --remove-orphans
 
 
 .PHONY: count
