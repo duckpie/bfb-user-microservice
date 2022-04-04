@@ -6,7 +6,6 @@ services:
       context: .
     depends_on:
       - db
-      - migrate
     command: run
     restart: unless-stopped
 
@@ -23,16 +22,16 @@ services:
           "-U",
           "root"
         ]
-      timeout: 45s
+      timeout: 20s
       interval: 10s
-      retries: 10
-    restart: always
+      retries: 3
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
       - APP_DB_USER=wrs
       - APP_DB_PASS=qwerty
-      - APP_DB_NAME=wrs_user_ms_docker
+      - APP_DB_NAME=wrs_user_ms
+      - APP_DB_FOR_TESTS_NAME=wrs_user_ms_test
     logging:
       options:
         max-size: 10m
@@ -42,8 +41,9 @@ services:
     volumes:
       - ./db:/docker-entrypoint-initdb.d/
       - db:/var/lib/postgresql/data
+    restart: unless-stopped
 
-  migrate:
+  migrate_main:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
@@ -52,7 +52,25 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://wrs:qwerty@db:5432/wrs_user_ms_docker?sslmode=disable",
+        "postgres://wrs:qwerty@db:5432/wrs_user_ms?sslmode=disable",
+        "up"
+      ]
+    links:
+      - db
+    depends_on:
+      - db
+    restart: on-failure
+
+  migrate_test:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://wrs:qwerty@db:5432/wrs_user_ms_test?sslmode=disable",
         "up"
       ]
     links:
