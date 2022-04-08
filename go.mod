@@ -10,7 +10,7 @@ require (
 
 require (
 	github.com/twinj/uuid v1.0.0
-	github.com/wrs-news/golang-proto v0.2.2
+	github.com/wrs-news/golang-proto v0.3.1
 	google.golang.org/genproto v0.0.0-20220324131243-acbaeb5b85eb
 	google.golang.org/protobuf v1.28.0
 )

@@ -23,6 +23,7 @@ func (u *User) ToProtoUser() *pb.User {
 		Uuid:      u.Uuid,
 		Login:     u.Login,
 		Email:     u.Email,
+		Hash:      u.Hash,
 		Role:      u.Role,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
