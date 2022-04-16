@@ -1,8 +1,6 @@
 package models
 
 import (
-	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/go-ozzo/ozzo-validation/v4/is"
 	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 )
 
@@ -28,23 +26,4 @@ func (u *User) ToProtoUser() *pb.User {
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}
-}
-
-func NewUserReq_Validation(nu *pb.NewUserReq) error {
-	return validation.ValidateStruct(
-		nu,
-
-		validation.Field(&nu.Email,
-			is.Email,
-			validation.Required,
-		),
-
-		validation.Field(&nu.Login,
-			validation.Required,
-		),
-
-		validation.Field(&nu.Password,
-			validation.Required,
-		),
-	)
 }

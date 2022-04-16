@@ -2,36 +2,22 @@ package server
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/wrs-news/bfb-user-microservice/internal/models"
 	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 func (s *Server) CreateUser(ctx context.Context, nu *pb.NewUserReq) (*pb.User, error) {
-	st := status.New(codes.InvalidArgument, "invalid username")
-	desc := "The username must only contain alphanumeric characters"
-	v := &errdetails.BadRequest_FieldViolation{
-		Field:       "username",
-		Description: desc,
-	}
-	br := &errdetails.BadRequest{}
-	br.FieldViolations = append(br.FieldViolations, v)
-	st, err := st.WithDetails(br)
-
-	// Валидация
-	if err := models.NewUserReq_Validation(nu); err != nil {
-		return nil, st.Err()
-	}
-
 	// Создание хеша пароля
 	b, err := bcrypt.GenerateFromPassword([]byte(nu.Password), bcrypt.MinCost)
 	if err != nil {
-		return nil, err
+		es := status.New(codes.Internal, err.Error())
+		return nil, es.Err()
 	}
 
 	u := models.User{
@@ -42,7 +28,8 @@ func (s *Server) CreateUser(ctx context.Context, nu *pb.NewUserReq) (*pb.User, e
 
 	// Операция с БД
 	if err := s.sqlstore.User().Create(&u); err != nil {
-		return nil, err
+		es := status.New(codes.Internal, err.Error())
+		return nil, es.Err()
 	}
 
 	return u.ToProtoUser(), nil
@@ -52,7 +39,15 @@ func (s *Server) GetUserById(ctx context.Context, uReq *pb.UserReqID) (*pb.User,
 	u := models.User{Id: uReq.Id}
 
 	if err := s.sqlstore.User().GetById(&u); err != nil {
-		return nil, err
+		switch err {
+		case sql.ErrNoRows:
+			es := status.New(codes.NotFound, err.Error())
+			return nil, es.Err()
+
+		default:
+			es := status.New(codes.Internal, err.Error())
+			return nil, es.Err()
+		}
 	}
 
 	return u.ToProtoUser(), nil
@@ -62,7 +57,15 @@ func (s *Server) GetUserByLogin(ctx context.Context, uReq *pb.UserReqLogin) (*pb
 	u := models.User{Login: uReq.Login}
 
 	if err := s.sqlstore.User().GetByLogin(&u); err != nil {
-		return nil, err
+		switch err {
+		case sql.ErrNoRows:
+			es := status.New(codes.NotFound, err.Error())
+			return nil, es.Err()
+
+		default:
+			es := status.New(codes.Internal, err.Error())
+			return nil, es.Err()
+		}
 	}
 
 	return u.ToProtoUser(), nil
@@ -72,7 +75,15 @@ func (s *Server) GetUserByUuid(ctx context.Context, uReq *pb.UserReqUuid) (*pb.U
 	u := models.User{Uuid: uReq.Uuid}
 
 	if err := s.sqlstore.User().GetByUuid(&u); err != nil {
-		return nil, err
+		switch err {
+		case sql.ErrNoRows:
+			es := status.New(codes.NotFound, err.Error())
+			return nil, es.Err()
+
+		default:
+			es := status.New(codes.Internal, err.Error())
+			return nil, es.Err()
+		}
 	}
 
 	return u.ToProtoUser(), nil
@@ -87,7 +98,15 @@ func (s *Server) UpdateUser(ctx context.Context, uUreq *pb.UpdateUserReq) (*pb.U
 	}
 
 	if err := s.sqlstore.User().Update(&u); err != nil {
-		return nil, err
+		switch err {
+		case sql.ErrNoRows:
+			es := status.New(codes.NotFound, err.Error())
+			return nil, es.Err()
+
+		default:
+			es := status.New(codes.Internal, err.Error())
+			return nil, es.Err()
+		}
 	}
 
 	return u.ToProtoUser(), nil
@@ -97,7 +116,15 @@ func (s *Server) DeleteUser(ctx context.Context, uReq *pb.UserReqUuid) (*pb.User
 	u := models.User{Uuid: uReq.Uuid}
 
 	if err := s.sqlstore.User().Delete(&u); err != nil {
-		return nil, err
+		switch err {
+		case sql.ErrNoRows:
+			es := status.New(codes.NotFound, err.Error())
+			return nil, es.Err()
+
+		default:
+			es := status.New(codes.Internal, err.Error())
+			return nil, es.Err()
+		}
 	}
 
 	return u.ToProtoUser(), nil
@@ -112,7 +139,8 @@ func (s *Server) GetAll(ctx context.Context, sReq *pb.SelectionReq) (*pb.Selecti
 		defer close(cArr)
 		arr, err := s.sqlstore.User().Selection(sReq)
 		if err != nil {
-			return err
+			es := status.New(codes.Internal, err.Error())
+			return es.Err()
 		}
 
 		cArr <- arr
@@ -123,7 +151,8 @@ func (s *Server) GetAll(ctx context.Context, sReq *pb.SelectionReq) (*pb.Selecti
 		defer close(cCount)
 		c, err := s.sqlstore.User().Count(sReq)
 		if err != nil {
-			return err
+			es := status.New(codes.Internal, err.Error())
+			return es.Err()
 		}
 
 		cCount <- c
@@ -134,7 +163,8 @@ func (s *Server) GetAll(ctx context.Context, sReq *pb.SelectionReq) (*pb.Selecti
 	arr := <-cArr
 
 	if errs.Wait() != nil {
-		return nil, errs.Wait()
+		es := status.New(codes.Internal, errs.Wait().Error())
+		return nil, es.Err()
 	}
 
 	return &pb.Selection{
