@@ -23,6 +23,7 @@ test:
 			--remove-orphans \
 			--exit-code-from user_ms_service_test \
 			--abort-on-container-exit user_ms_service_test
+	sudo docker stop bfb-user-microservice_db_test_1
 			
 
 .PHONY: count

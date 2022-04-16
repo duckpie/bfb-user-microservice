@@ -50,7 +50,7 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://wrs:qwerty@db:5432/wrs_user_ms_test?sslmode=disable",
+        "postgres://wrs:qwerty@db_test:5432/wrs_user_ms_test?sslmode=disable",
         "up"
       ]
     links:
