@@ -19,8 +19,11 @@ down:
 .PHONY: test
 test:
 	sudo docker-compose -f docker-compose.test.yml build
-	sudo docker-compose -f docker-compose.test.yml up --remove-orphans
-
+	sudo docker-compose -f docker-compose.test.yml up \
+			--remove-orphans \
+			--exit-code-from user_ms_service_test \
+			--abort-on-container-exit user_ms_service_test
+			
 
 .PHONY: count
 count:
