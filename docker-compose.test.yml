@@ -1,13 +1,13 @@
 version: "3.9"
 services:
-  user_ms_service:
+  user_ms_service_test:
     build:
       dockerfile: Dockerfile.test
       context: .
     depends_on:
-      - db
+      - db_test
 
-  db:
+  db_test:
     image: postgres:14.1-alpine
     healthcheck:
       test:
@@ -54,9 +54,9 @@ services:
         "up"
       ]
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
     restart: on-failure
 
 volumes:
