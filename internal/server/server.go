@@ -6,6 +6,8 @@ import (
 	"github.com/wrs-news/bfb-user-microservice/internal/db"
 	pb "github.com/wrs-news/golang-proto/pkg/proto/user"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/encoding"
+	"google.golang.org/grpc/encoding/gzip"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -28,7 +30,9 @@ func (s *Server) HeartbeatCheck(ctx context.Context, e *emptypb.Empty) (*emptypb
 	return &emptypb.Empty{}, nil
 }
 
-func InitServer(s db.SQLStoreI) *Server {
+func CreateServer(s db.SQLStoreI) *Server {
+	encoding.RegisterCompressor(encoding.GetCompressor(gzip.Name))
+
 	return &Server{
 		server:   grpc.NewServer(),
 		sqlstore: s,

@@ -30,7 +30,7 @@ func TestMain(m *testing.M) {
 	testConfig.Services.DB.DbUrl = testConfig.Services.DB.DbUrlTest
 
 	lis = bufconn.Listen(bufSize)
-	srv := server.InitServer(mocksqlstore.Create())
+	srv := server.CreateServer(mocksqlstore.Create())
 
 	pb.RegisterUserServiceServer(srv.GetServer(), srv)
 	go func() {

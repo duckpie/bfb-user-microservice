@@ -76,7 +76,7 @@ func runner(cfg *config.Config) (err error) {
 	}
 	defer postgres.Close()
 
-	srv := server.InitServer(sqlstore.Create(postgres))
+	srv := server.CreateServer(sqlstore.Create(postgres))
 
 	var g group.Group
 	{
